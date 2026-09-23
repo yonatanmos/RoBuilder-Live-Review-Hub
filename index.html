@@ -133,6 +133,7 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 8px; border: 2px solid #1a1a1a; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
     </style>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
 <body class="min-h-screen pb-12 px-4 flex flex-col relative">
 
@@ -149,7 +150,7 @@
                 <button onclick="switchTab('section-queue')" id="tab-queue" class="btn-roblox text-xs sm:text-sm px-4 py-2">Submit Game</button>
                 <button onclick="switchTab('section-history')" id="tab-history" class="btn-roblox text-xs sm:text-sm px-4 py-2">History</button>
                 <button onclick="switchTab('section-portfolio')" id="tab-portfolio" class="btn-roblox text-xs sm:text-sm px-4 py-2">Portfolio</button>
-                <button onclick="switchTab('section-admin')" id="tab-admin" class="btn-roblox btn-purple text-xs sm:text-sm px-4 py-2 hidden">Admin</button>
+                <button onclick="switchTab('section-admin')" id="tab-admin" class="btn-roblox btn-purple text-xs sm:text-sm px-4 py-2 hidden" class="hidden">Admin</button>
             </div>
         </div>
     </nav>
@@ -286,6 +287,20 @@
                                     Submit Game 🎮
                                 </button>
                             </div>
+
+                            <div id="priority-panel" class="hidden mt-4 border-4 border-yellow-500 bg-yellow-50 rounded-2xl p-4 md:p-5 shadow-[4px_5px_0px_rgba(234,179,8,0.25)]">
+                                <div class="flex items-start gap-3">
+                                    <div class="text-3xl shrink-0">⭐</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-['Lilita_One'] text-2xl text-yellow-800">Make This Submission IMPORTANT</h4>
+                                        <p class="font-bold text-yellow-900 text-sm mt-1 mb-3">Buy the RoBuilder Developer Product for this submission. Once Roblox confirms the purchase, this game jumps above all normal submissions, including games submitted later.</p>
+                                        <a id="priority-product-button" href="https://www.roblox.com/developer-product/6766483571/product/3714242041" target="_blank" rel="noopener noreferrer" class="btn-roblox btn-yellow w-full py-3 text-base md:text-lg text-center inline-block">
+                                            Buy Priority on Roblox ⭐
+                                        </a>
+                                        <p id="priority-status" class="text-xs md:text-sm font-black text-yellow-800 mt-3 text-center"></p>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -307,7 +322,7 @@
 
                         <div id="queue-empty" class="hidden flex-1 flex flex-col items-center justify-center text-gray-500">
                             <div class="text-5xl md:text-7xl mb-6 grayscale opacity-40 animate-float">🎮</div>
-                            <p class="font-bold text-2xl md:text-3xl font-['Lilita_One'] text-gray-400">Queue is empty!</p>
+                            <p class="font-bold text-2xl md:text-3xl font-bold text-gray-400">Queue is empty!</p>
                         </div>
 
                         <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 md:pr-3 space-y-4" id="queue-list-container">
@@ -332,7 +347,7 @@
                 <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 md:pr-3 space-y-3" id="history-list-container">
                     <div class="flex flex-col items-center justify-center text-gray-500 h-full mt-10">
                         <div class="text-5xl md:text-6xl mb-4 grayscale opacity-40 animate-float">🕰️</div>
-                        <p class="font-bold text-xl md:text-2xl font-['Lilita_One'] text-gray-400">Loading history...</p>
+                        <p class="font-bold text-xl md:text-2xl font-bold text-gray-400">Loading history...</p>
                     </div>
                 </div>
             </div>
@@ -340,6 +355,7 @@
 
         <!-- SECTION 5: ADMIN DASHBOARD -->
         <section id="section-admin" class="tab-content hidden animate-pop">
+<!-- Admin controls are intentionally disabled in the free Spark build. Use Firebase Console for admin/review changes. -->
             <div class="panel border-purple-500 p-6 md:p-8 shadow-[8px_10px_0px_rgba(168,85,247,0.3)] bg-purple-50">
                 <div class="flex items-center justify-between border-b-4 border-purple-200 pb-6 mb-6">
                     <div>
@@ -411,61 +427,7 @@
             }
         }
 
-        // ==========================================
-        // DYNAMIC PORTFOLIO IMAGES
-        // ==========================================
-        window.ROBUILDER_PORTFOLIO = [
-            {
-                title: 'Bike Shop',
-                image: 'assets/images/portfolio/bike-shop.webp',
-                description: 'A bright Roblox motorcycle shop showcase with display platforms, branded walls, gear, and a clean showroom layout.'
-            },
-            {
-                title: 'Battle Bots Lobby',
-                image: 'assets/images/portfolio/battle-bots-lobby.webp',
-                description: 'A colorful futuristic Roblox lobby with neon city scenery, battle areas, shops, and interactive game displays.'
-            },
-            {
-                title: 'Xmax',
-                image: 'assets/images/portfolio/xmas.webp',
-                description: 'A colorful Amezing christmas map.'
-            },
-            {
-                title: 'Tycoon Lobby',
-                image: 'assets/images/portfolio/tycoon_lobby.webp',
-                description: 'A Amezing Tycoon Lobby.'
-            },
-            {
-                title: 'Steal Stud',
-                image: 'assets/images/portfolio/steal_stud.webp',
-                description: 'An amezing looking steal a brainrot map style.'
-            },
-            {
-                title: 'Pink Castle',
-                image: 'assets/images/portfolio/Pink_Castle.webp',
-                description: 'A Very PinkFull castle map for an amezing look.'
-            },
-            {
-                title: 'Stunt Lobby',
-                image: 'assets/images/portfolio/Stunt_lobby.webp',
-                description: 'A Stunt Lobby That Look Amezing And Wounder Full.'
-            },
-            {
-                title: 'Castle Map',
-                image: 'assets/images/portfolio/Castle_Map.webp',
-                description: 'A Wounder Full Old Castle In Low Poly Style.'
-            },
-            {
-                title: 'Stunt Werehouse',
-                image: 'assets/images/portfolio/Stunt_werehouse.webp',
-                description: 'A Look inside of the werehouse, what an amezing look.'
-            },
-            {
-                title: 'Theme Tycoon',
-                image: 'assets/images/portfolio/Theme_Tycoon.webp',
-                description: 'A Good Looking Massive Tycoon for the player to enjoy it look.'
-            }
-        ];
+        // Portfolio entries are loaded from assets/portfolio.js so you can add images without editing this HTML file.
 
         function renderPortfolio() {
             const grid = document.getElementById('portfolio-grid');
@@ -491,357 +453,178 @@
         document.addEventListener("DOMContentLoaded", renderPortfolio);
     </script>
 
-    <!-- Firebase SDK -->
+    <script src="assets/site-config.js"></script>
+    <script src="assets/portfolio.js"></script>
+
+    <!-- Firebase SDK: FREE Spark-plan edition. No Cloud Functions are used. -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyCSu7SKHWRsxM7gWxbJfGCX-78QLDrRMBs",
-            authDomain: "robuilder-website.firebaseapp.com",
-            projectId: "robuilder-website",
-            storageBucket: "robuilder-website.firebasestorage.app",
-            messagingSenderId: "840242217780",
-            appId: "1:840242217780:web:43344bec2925c31ed0db61",
-            measurementId: "G-D0JT8F9X82"
-        };
-        
+        import { getFirestore, collection, doc, setDoc, updateDoc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const siteConfig = window.ROBUILDER_SITE_CONFIG || {};
+        const firebaseConfig = siteConfig.firebaseConfig || {};
+        const APP_ID = siteConfig.appId || 'robuilder-hub';
+        if (!firebaseConfig.projectId) throw new Error('RoBuilder Firebase configuration is missing projectId.');
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        const publicRoot = ['artifacts', APP_ID, 'public', 'data'];
+        const queueCol = collection(db, ...publicRoot, 'queue');
+        const stateCol = collection(db, ...publicRoot, 'submitterState');
+        const intentCol = collection(db, ...publicRoot, 'priorityIntents');
+        const receiptCol = collection(db, ...publicRoot, 'priorityReceipts');
+        const liveRef = doc(db, ...publicRoot, 'live', 'current');
+        const priorityProductUrl = siteConfig.priorityProductUrl || 'https://www.roblox.com/developer-product/6766483571/product/3714242041';
+        const blockedPattern = /(fuck|shit|bitch|asshole|dick|piss|cunt|nigger|nigga|faggot|whore|slut)/i;
 
         let currentUser = null;
-        let localBlacklist = [];
-        let isAdmin = false; 
-        
-        let queueDataCache = { queue: [], currentlyReviewing: null }; 
+        let queueDataCache = { queue: [], history: [], currentlyReviewing: null };
+        let mySubmissionId = null;
+        let unsubMyReceipt = null;
 
-        window.toggleAdminMode = function() {
-            isAdmin = !isAdmin;
-            alert("Admin Mode toggled to: " + (isAdmin ? "ON" : "OFF"));
-            const adminTab = document.getElementById('tab-admin');
-            if (adminTab) {
-                if (isAdmin) adminTab.classList.remove('hidden');
-                else {
-                    adminTab.classList.add('hidden');
-                    switchTab('section-queue');
+        function toMillis(value) {
+            if (!value) return 0;
+            if (typeof value.toMillis === 'function') return value.toMillis();
+            if (typeof value === 'string') return Date.parse(value) || 0;
+            if (value instanceof Date) return value.getTime();
+            return Number(value) || 0;
+        }
+        function friendlyError(err) {
+            const code = String(err?.code || '');
+            if (code.includes('permission-denied')) return 'Firebase rejected the request. Deploy the firestore.rules from this free project.';
+            if (code.includes('failed-precondition')) return err.message || 'You already have a game waiting, or your cooldown is active.';
+            if (code.includes('unavailable')) return 'Firebase is temporarily unavailable. Please try again.';
+            return err?.message || 'Something went wrong. Please try again.';
+        }
+        function sortQueue(items) {
+            return [...items].sort((a,b) => {
+                if (!!b.priority !== !!a.priority) return b.priority ? 1 : -1;
+                if (a.priority && b.priority) {
+                    const pa = toMillis(a.priorityAt), pb = toMillis(b.priorityAt);
+                    if (pa !== pb) return pa - pb;
                 }
-            }
-            if (queueDataCache) renderQueueAndState(queueDataCache);
-        };
+                const ca = toMillis(a.createdAt), cb = toMillis(b.createdAt);
+                if (ca !== cb) return ca - cb;
+                return String(a.id).localeCompare(String(b.id));
+            });
+        }
+        function showFormMessage(text, type='success') {
+            const msg=document.getElementById('form-message'); if(!msg) return;
+            const classes={success:'mb-4 p-3 rounded bg-green-100 text-green-800 border-2 border-green-500 font-bold text-center block',error:'mb-4 p-3 rounded bg-red-100 text-red-800 border-2 border-red-500 font-bold text-center block',info:'mb-4 p-3 rounded bg-blue-100 text-blue-800 border-2 border-blue-500 font-bold text-center block'};
+            msg.textContent=text; msg.className=classes[type]||classes.info;
+        }
+        function usernameLower(name){ return String(name||'').trim().toLowerCase(); }
+        function findMine(){ return currentUser ? (queueDataCache.queue.find(x=>x.userId===currentUser.uid)||null) : null; }
+        function updatePriorityPanel(submissionId){
+            mySubmissionId=submissionId||null;
+            const panel=document.getElementById('priority-panel'), status=document.getElementById('priority-status'), btn=document.getElementById('priority-product-button');
+            if(!panel||!status||!btn) return;
+            const item=submissionId ? queueDataCache.queue.find(x=>x.id===submissionId) : null;
+            if(!item){ panel.classList.add('hidden'); status.textContent=''; return; }
+            panel.classList.remove('hidden'); btn.href=priorityProductUrl;
+            btn.textContent=item.priority?'Priority Purchased ✅':'Buy Priority on Roblox ⭐';
+            if(item.priority){ status.textContent='✅ Your game is IMPORTANT and stays above all normal submissions.'; btn.classList.add('pointer-events-none','opacity-60'); }
+            else { status.textContent=item.priorityPending?'⏳ Waiting for Roblox to process the Developer Product.':'Buy Priority for this submission. The next submission is normal unless Priority is purchased again.'; btn.classList.remove('pointer-events-none','opacity-60'); }
+        }
+        async function watchMyReceipt(id){
+            if(unsubMyReceipt) unsubMyReceipt();
+            unsubMyReceipt=null;
+            if(!currentUser||!id) return;
+            unsubMyReceipt=onSnapshot(doc(receiptCol,id), async snap=>{
+                if(!snap.exists()) return;
+                const receipt=snap.data();
+                if(receipt.userId!==currentUser.uid || receipt.submissionId!==id) return;
+                const item=queueDataCache.queue.find(x=>x.id===id);
+                if(!item || item.priority || item.status!=='waiting') return;
+                try{ await updateDoc(doc(queueCol,id),{priority:true,priorityPending:false,priorityAt:serverTimestamp(),updatedAt:serverTimestamp()}); }
+                catch(err){ console.error('Priority activation:',err); }
+            }, err=>console.warn('Priority receipt listener:',err));
+        }
 
-        const queueRef = doc(db, "app_state", "live_queue");
-
-        signInAnonymously(auth).catch((err) => console.error(err));
-        
-        onAuthStateChanged(auth, async (user) => {
-            if (user) currentUser = user;
-        });
-
-        document.getElementById('submission-form').addEventListener('submit', async function(event) {
+        document.getElementById('submission-form').addEventListener('submit', async event=>{
             event.preventDefault();
-    
-            const btn = document.getElementById('btn-submit');
-            const msg = document.getElementById('form-message');
-    
-            const username = document.getElementById('input-username').value.trim();
-            const gameName = document.getElementById('input-gamename').value.trim();
-            const gameUrl = document.getElementById('input-gameurl').value.trim();
-            const timeSpent = document.getElementById('input-timespent').value.trim();
-            const robuxSpent = document.getElementById('input-robuxspent').value.trim();
-
-            if(!username || !gameName || !gameUrl || !timeSpent || !robuxSpent) {
-                msg.textContent = "Please fill in all fields.";
-                msg.className = "mb-4 p-3 rounded bg-red-100 text-red-800 border-2 border-red-500 font-bold text-center block";
-                return;
-            }
-
-            if (localBlacklist.some(name => name.toLowerCase() === username.toLowerCase())) {
-                msg.textContent = "You are currently blocked from submitting games.";
-                msg.className = "mb-4 p-3 rounded bg-red-100 text-red-800 border-2 border-red-500 font-bold text-center block";
-                return;
-            }
-
-            const currentQueue = queueDataCache.queue || [];
-            const currentReview = queueDataCache.currentlyReviewing;
-            
-            const isAlreadyInQueue = currentQueue.some(game => game.username.toLowerCase() === username.toLowerCase());
-            const isCurrentlyReviewing = currentReview && currentReview.username && currentReview.username.toLowerCase() === username.toLowerCase();
-            
-            if (isAlreadyInQueue || isCurrentlyReviewing) {
-                msg.textContent = "You already have a game in the live queue!";
-                msg.className = "mb-4 p-3 rounded bg-red-100 text-red-800 border-2 border-red-500 font-bold text-center block animate-pop";
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = "Submitting... ⏳";
-            msg.classList.remove('hidden');
-    
-            try {
-                const newGameEntry = {
-                    username,
-                    gameName,
-                    gameUrl,
-                    timeSpent,
-                    robuxSpent,
-                    submittedAt: new Date().toISOString()
-                };
-
-                await setDoc(queueRef, {
-                    queue: arrayUnion(newGameEntry)
-                }, { merge: true });
-
-                msg.textContent = "Game submitted to the queue!";
-                msg.className = "mb-4 p-3 rounded bg-green-100 text-green-800 border-2 border-green-500 font-bold text-center block";
+            if(!currentUser){ showFormMessage('Connecting to RoBuilder... please try again.', 'info'); return; }
+            const btn=document.getElementById('btn-submit');
+            const username=document.getElementById('input-username').value.trim();
+            const gameName=document.getElementById('input-gamename').value.trim();
+            const gameUrl=document.getElementById('input-gameurl').value.trim();
+            const timeSpent=document.getElementById('input-timespent').value.trim();
+            const robuxSpent=Number(document.getElementById('input-robuxspent').value);
+            const usernameLowerValue=usernameLower(username);
+            if(!username||!gameName||!gameUrl||!timeSpent||!Number.isFinite(robuxSpent)){ showFormMessage('Please fill in all fields.','error'); return; }
+            if(blockedPattern.test(username)||blockedPattern.test(gameName)){ showFormMessage('Please remove inappropriate language before submitting.','error'); return; }
+            try{ const u=new URL(gameUrl); if(u.protocol!=='https:'||!/(^|\.)roblox\.com$/i.test(u.hostname)) throw new Error('bad url'); }
+            catch{ showFormMessage('Game Link must be a valid https Roblox URL.','error'); return; }
+            btn.disabled=true; btn.innerHTML='Submitting... ⏳';
+            const submissionRef=doc(queueCol); const stateRef=doc(stateCol,currentUser.uid);
+            try{
+                await runTransaction(db,async tx=>{
+                    const stateSnap=await tx.get(stateRef); const state=stateSnap.exists()?stateSnap.data():{};
+                    if(state.activeSubmissionId){
+                        const activeSnap=await tx.get(doc(queueCol,state.activeSubmissionId));
+                        if(activeSnap.exists() && ['waiting','reviewing'].includes(activeSnap.data().status)) throw new Error('You already have a game waiting for review.');
+                    }
+                    const cooldown=toMillis(state.cooldownUntil);
+                    if(cooldown>Date.now() && state.scriptingAllowed!==true){
+                        const hours=Math.ceil((cooldown-Date.now())/3600000); throw new Error(`You must wait about ${hours} more hour(s) before submitting again.`);
+                    }
+                    tx.set(submissionRef,{userId:currentUser.uid,username,usernameLower:usernameLowerValue,gameName,gameUrl,timeSpent,robuxSpent,status:'waiting',priority:false,priorityPending:false,priorityAt:null,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+                    tx.set(stateRef,{userId:currentUser.uid,activeSubmissionId:submissionRef.id,cooldownUntil:state.cooldownUntil??null,scriptingAllowed:state.scriptingAllowed===true,warningCount:Number(state.warningCount||0),createdAt:state.createdAt||serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
+                });
+                mySubmissionId=submissionRef.id;
+                await watchMyReceipt(submissionRef.id);
+                updatePriorityPanel(submissionRef.id);
+                showFormMessage('Game submitted! Your live position will update automatically.','success');
                 document.getElementById('submission-form').reset();
-
-            } catch (err) {
-                console.error("Firestore Write Error:", err);
-                msg.textContent = "Error saving to database: " + (err.message || "Unknown error");
-                msg.className = "mb-4 p-3 rounded bg-red-100 text-red-800 border-2 border-red-500 font-bold text-center block";
-            }
-
-            btn.disabled = false;
-            btn.innerHTML = "Submit Game 🎮";
-    
-            setTimeout(() => { msg.classList.add('hidden'); }, 5000);
+            }catch(err){ console.error('submitGame:',err); showFormMessage(friendlyError(err),'error'); }
+            finally{ btn.disabled=false; btn.innerHTML='Submit Game 🎮'; }
         });
 
-        window.adminSelectGame = async function(index) {
-            try {
-                const docSnap = await getDoc(queueRef);
-                if (!docSnap.exists()) return;
-                const data = docSnap.data();
-                
-                let queue = data.queue || [];
-                let history = data.history || [];
-                const current = data.currentlyReviewing;
-
-                let updatedHistory = history;
-                if (current && current.username) {
-                    updatedHistory = [...history, current];
-                }
-
-                const selectedGame = queue[index];
-                queue.splice(index, 1); 
-
-                await updateDoc(queueRef, {
-                    currentlyReviewing: selectedGame,
-                    queue: queue,
-                    history: updatedHistory
-                });
-            } catch (err) {
-                console.error("Failed to select game:", err);
-                alert("Error selecting game: " + err.message);
-            }
-        };
-
-        window.adminDeleteGame = async function(index) {
-            if (!confirm("Are you sure you want to completely remove this game from the queue?")) return;
-            try {
-                const docSnap = await getDoc(queueRef);
-                if (!docSnap.exists()) return;
-                
-                const data = docSnap.data();
-                let queue = data.queue || [];
-                queue.splice(index, 1);
-                
-                await updateDoc(queueRef, { queue: queue });
-            } catch (err) {
-                console.error("Failed to delete game:", err);
-                alert("Error deleting game: " + err.message);
-            }
-        };
-
-        window.clearCurrentReview = async function() {
-            try {
-                const docSnap = await getDoc(queueRef);
-                if (!docSnap.exists()) return;
-
-                const data = docSnap.data();
-                const queue = data.queue || [];
-                const history = data.history || [];
-                const current = data.currentlyReviewing;
-
-                let updatedHistory = history;
-                if (current && current.username) {
-                    updatedHistory = [...history, current];
-                }
-
-                const nextGame = queue.length > 0 ? queue[0] : null;
-                const remainingQueue = queue.length > 0 ? queue.slice(1) : [];
-
-                await updateDoc(queueRef, {
-                    currentlyReviewing: nextGame,
-                    queue: remainingQueue,
-                    history: updatedHistory
-                });
-            } catch (err) {
-                console.error("Failed to finish review:", err);
-                alert("Error finishing review: " + err.message);
-            }
-        };
-
-        document.getElementById('blacklist-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const input = document.getElementById('input-blacklist');
-            const username = input.value.trim();
-            if (!username) return;
-
-            try {
-                await setDoc(queueRef, {
-                    blacklist: arrayUnion(username)
-                }, { merge: true });
-                input.value = '';
-                alert(`User ${username} added to blacklist.`);
-            } catch (err) {
-                console.error("Blacklist error:", err);
-                alert("Error blacklisting user: " + err.message);
-            }
+        document.getElementById('priority-product-button')?.addEventListener('click',async event=>{
+            event.preventDefault();
+            const item=findMine();
+            if(!item){ showFormMessage('Submit a game first so Priority can be linked to it.','error'); return; }
+            if(item.priority) return;
+            try{
+                await setDoc(doc(intentCol,item.usernameLower),{userId:currentUser.uid,submissionId:item.id,usernameLower:item.usernameLower,createdAt:serverTimestamp()});
+                await updateDoc(doc(queueCol,item.id),{priorityPending:true,updatedAt:serverTimestamp()});
+                window.open(priorityProductUrl,'_blank','noopener,noreferrer');
+                showFormMessage('Roblox opened. The Priority badge will appear automatically after the purchase is processed.','info');
+            }catch(err){ console.error('Priority:',err); showFormMessage(friendlyError(err),'error'); }
         });
 
-        onSnapshot(queueRef, (docSnapshot) => {
-            if (docSnapshot.exists()) {
-                const data = docSnapshot.data();
-                queueDataCache = data;
-                localBlacklist = data.blacklist || [];
-                renderQueueAndState(data);
-            } else {
-                setDoc(queueRef, { queue: [], history: [], blacklist: [], currentlyReviewing: null });
-            }
-        }, (error) => {
-            console.error("Queue snapshot error:", error);
+        signInAnonymously(auth).catch(err=>{ console.error('Anonymous auth:',err); showFormMessage('Enable Authentication → Anonymous in Firebase Console.','error'); });
+        onAuthStateChanged(auth, async user=>{
+            currentUser=user||null;
+            if(!currentUser) return;
+            const mine=findMine(); if(mine){ mySubmissionId=mine.id; await watchMyReceipt(mine.id); updatePriorityPanel(mine.id); }
         });
 
-        function renderQueueAndState(data) {
-            const queueList = data.queue || [];
-            const historyList = data.history || [];
-            const currentlyReviewing = data.currentlyReviewing;
-            const blacklist = data.blacklist || [];
+        onSnapshot(queueCol,snapshot=>{
+            queueDataCache.queue=sortQueue(snapshot.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.status==='waiting'));
+            renderQueueAndState(queueDataCache);
+            const mine=findMine(); if(mine){ mySubmissionId=mine.id; updatePriorityPanel(mine.id); watchMyReceipt(mine.id); } else updatePriorityPanel(null);
+        },error=>{ console.error('Queue snapshot error:',error); const loader=document.getElementById('queue-loader'); if(loader) loader.classList.add('hidden'); showFormMessage('Live queue connection failed. Deploy this project’s firestore.rules.','error'); });
 
-            const loader = document.getElementById('queue-loader');
-            if (loader) loader.classList.add('hidden');
-            
-            const container = document.getElementById('queue-list-container');
-            const emptyState = document.getElementById('queue-empty');
-            
-            document.getElementById('queue-count').textContent = `${queueList.length} Waiting`;
+        onSnapshot(liveRef,snapshot=>{ const d=snapshot.exists()?snapshot.data():{}; queueDataCache.currentlyReviewing=d.currentlyReviewing||null; queueDataCache.history=Array.isArray(d.history)?d.history:[]; renderQueueAndState(queueDataCache); },error=>console.warn('Live state snapshot:',error));
 
-            if(queueList.length === 0) {
-                container.innerHTML = '';
-                emptyState.classList.remove('hidden');
-            } else {
-                emptyState.classList.add('hidden');
-                container.innerHTML = queueList.map((item, index) => {
-                    const isFirst = index === 0;
-                    return `
-                    <div class="bg-white border-4 border-gray-900 rounded-xl p-3 flex flex-col sm:flex-row items-start sm:items-center gap-3 transition-transform hover:scale-[1.01] ${isFirst ? 'bg-orange-50 border-orange-500 shadow-[4px_4px_0px_rgba(249,115,22,0.3)]' : 'shadow-[3px_4px_0px_#1a1a1a]'}">
-                        
-                        <div class="flex items-center gap-3 w-full sm:w-auto flex-grow min-w-0">
-                            <div class="font-['Lilita_One'] text-2xl md:text-3xl ${isFirst ? 'text-orange-500' : 'text-gray-400'} w-8 md:w-10 text-center shrink-0">
-                                #${index + 1}
-                            </div>
-                            <div class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 rounded-full border-2 border-gray-900 overflow-hidden shrink-0">
-                                <img src="https://tr.rbxcdn.com/38c6edcb50633730ff4cf39459583254/150/150/AvatarHeadshot/Png" alt="Avatar" class="w-full h-full object-cover">
-                            </div>
-                            <div class="flex-grow min-w-0">
-                                <h4 class="font-black text-gray-900 text-sm md:text-base truncate">${escapeHtml(item.username)}</h4>
-                                <p class="text-xs md:text-sm font-bold text-gray-600 truncate">${escapeHtml(item.gameName)}</p>
-                                
-                                <div class="flex flex-wrap gap-2 mt-1">
-                                    <span class="text-[10px] md:text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-black border border-blue-200" title="Time Spent">⏱️ ${escapeHtml(item.timeSpent || 'N/A')}</span>
-                                    <span class="text-[10px] md:text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-black border border-green-200" title="Robux Spent">💰 ${escapeHtml(item.robuxSpent || '0')} R$</span>
-                                    <a href="${escapeHtml(item.gameUrl)}" target="_blank" rel="noopener noreferrer" class="text-[10px] md:text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-black border border-purple-200 hover:bg-purple-200 transition-colors inline-block">🔗 Play Link</a>
-                                </div>
-                            </div>
-                        </div>
+        function renderQueueAndState(data){
+            const queueList=sortQueue(data.queue||[]); const historyList=data.history||[]; const currentlyReviewing=data.currentlyReviewing;
+            const loader=document.getElementById('queue-loader'); if(loader) loader.classList.add('hidden');
+            const container=document.getElementById('queue-list-container'), empty=document.getElementById('queue-empty'); if(!container||!empty) return;
+            document.getElementById('queue-count').textContent=`${queueList.length} Waiting`;
+            if(!queueList.length){container.innerHTML='';empty.classList.remove('hidden');}
+            else { empty.classList.add('hidden'); container.innerHTML=queueList.map((item,index)=>{
+                const important=item.priority===true, first=index===0;
+                const badge=important?'<span class="text-[10px] md:text-xs bg-yellow-100 text-yellow-900 px-2 py-0.5 rounded font-black border border-yellow-400">⭐ IMPORTANT</span>':'';
+                return `<div class="bg-white border-4 border-gray-900 rounded-xl p-3 flex flex-col sm:flex-row items-start sm:items-center gap-3 ${important?'bg-yellow-50 border-yellow-500':'shadow-[3px_4px_0px_#1a1a1a]'}"><div class="flex items-center gap-3 w-full flex-grow min-w-0"><div class="font-['Lilita_One'] text-2xl md:text-3xl ${important?'text-yellow-600':(first?'text-orange-500':'text-gray-400')} w-10 md:w-12 text-center shrink-0">#${index+1}</div><div class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 rounded-full border-2 border-gray-900 overflow-hidden shrink-0"><img src="https://tr.rbxcdn.com/38c6edcb50633730ff4cf39459583254/150/150/AvatarHeadshot/Png" alt="Avatar" class="w-full h-full object-cover"></div><div class="flex-grow min-w-0"><h4 class="font-black text-gray-900 text-sm md:text-base truncate">${escapeHtml(item.username)}</h4><p class="text-xs md:text-sm font-bold text-gray-600 truncate">${escapeHtml(item.gameName)}</p><div class="flex flex-wrap gap-2 mt-1">${badge}<span class="text-[10px] md:text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-black border border-blue-200">⏱️ ${escapeHtml(item.timeSpent||'N/A')}</span><span class="text-[10px] md:text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-black border border-green-200">💰 ${escapeHtml(item.robuxSpent||'0')} R$</span><a href="${escapeHtml(item.gameUrl)}" target="_blank" rel="noopener noreferrer" class="text-[10px] md:text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-black border border-purple-200">🔗 Play Link</a></div></div></div>${first?'<div class="text-xl md:text-2xl animate-bounce shrink-0 hidden sm:block">🔥</div>':''}</div>`;
+            }).join(''); }
 
-                        ${isAdmin ? `
-                            <div class="flex gap-2 w-full sm:w-auto mt-3 sm:mt-0 pt-3 sm:pt-0 border-t-2 border-gray-100 sm:border-0 justify-end">
-                                <button onclick="adminSelectGame(${index})" class="bg-blue-500 hover:bg-blue-600 text-white font-black text-xs px-3 py-2 rounded-lg border-2 border-gray-900 shadow-[2px_2px_0px_#1a1a1a] active:translate-y-1 active:shadow-none transition-all">Select</button>
-                                <button onclick="adminDeleteGame(${index})" class="bg-red-500 hover:bg-red-600 text-white font-black text-xs px-3 py-2 rounded-lg border-2 border-gray-900 shadow-[2px_2px_0px_#1a1a1a] active:translate-y-1 active:shadow-none transition-all">Delete</button>
-                            </div>
-                        ` : ''}
-
-                        ${isFirst && !isAdmin ? '<div class="text-xl md:text-2xl animate-bounce shrink-0 hidden sm:block">🔥</div>' : ''}
-                    </div>
-                `}).join('');
-            }
-
-            const reviewDisplay = document.getElementById('current-review-display');
-            const reviewLink = document.getElementById('current-review-link');
-            
-            if(currentlyReviewing && currentlyReviewing.username) {
-                reviewDisplay.innerHTML = `
-                    <div class="text-blue-900 font-['Lilita_One'] tracking-wide truncate w-full" title="${escapeHtml(currentlyReviewing.gameName)}">
-                        ${escapeHtml(currentlyReviewing.gameName)}
-                    </div>
-                    <div class="text-sm text-blue-700 mt-1 uppercase tracking-widest font-black truncate">
-                        by ${escapeHtml(currentlyReviewing.username)}
-                    </div>
-                `;
-                if(currentlyReviewing.gameUrl) {
-                    reviewLink.href = escapeHtml(currentlyReviewing.gameUrl);
-                    reviewLink.classList.remove('hidden');
-                } else {
-                    reviewLink.classList.add('hidden');
-                }
-            } else {
-                reviewDisplay.innerHTML = '<span class="text-gray-400 italic">Waiting for next game...</span>';
-                reviewLink.classList.add('hidden');
-            }
-
-            const histContainer = document.getElementById('history-list-container');
-            if(historyList.length === 0) {
-                histContainer.innerHTML = `
-                    <div class="flex flex-col items-center justify-center text-gray-500 h-full mt-10">
-                        <div class="text-5xl md:text-6xl mb-4 grayscale opacity-40 animate-float">🕰️</div>
-                        <p class="font-bold text-xl md:text-2xl font-['Lilita_One'] text-gray-400">No history yet</p>
-                    </div>`;
-            } else {
-                const reversed = [...historyList].reverse();
-                histContainer.innerHTML = reversed.map(item => `
-                    <div class="bg-white border-2 border-gray-300 rounded-xl p-3 flex items-center justify-between opacity-80 hover:opacity-100 transition-opacity">
-                        <div>
-                            <h4 class="font-black text-gray-800 text-sm md:text-base">${escapeHtml(item.gameName)}</h4>
-                            <p class="text-xs font-bold text-gray-500">by ${escapeHtml(item.username)}</p>
-                            <div class="flex flex-wrap gap-2 mt-1">
-                                <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-black border border-gray-200">⏱️ ${escapeHtml(item.timeSpent || 'N/A')}</span>
-                                <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-black border border-gray-200">💰 ${escapeHtml(item.robuxSpent || '0')} R$</span>
-                            </div>
-                        </div>
-                        <a href="${escapeHtml(item.gameUrl)}" target="_blank" rel="noopener noreferrer" class="text-xs bg-gray-800 text-white font-bold px-3 py-2 rounded-lg hover:bg-gray-700 whitespace-nowrap ml-2">Play</a>
-                    </div>
-                `).join('');
-            }
-
-            const adminNextContainer = document.getElementById('admin-next-queue');
-            if (adminNextContainer) {
-                if (queueList.length === 0) {
-                    adminNextContainer.innerHTML = '<p class="text-gray-500 font-bold italic">Queue is empty.</p>';
-                } else {
-                    adminNextContainer.innerHTML = queueList.slice(0, 3).map((item, i) => `
-                        <div class="p-2 border-2 border-gray-200 rounded-lg flex justify-between items-center text-xs font-bold">
-                            <span>#${i + 1} <strong>${escapeHtml(item.gameName)}</strong> by ${escapeHtml(item.username)}</span>
-                        </div>
-                    `).join('');
-                }
-            }
-
-            const blacklistUl = document.getElementById('blacklist-ul');
-            if (blacklistUl) {
-                if (blacklist.length === 0) {
-                    blacklistUl.innerHTML = '<li class="text-gray-400 italic">No blacklisted users.</li>';
-                } else {
-                    blacklistUl.innerHTML = blacklist.map(user => `
-                        <li class="flex justify-between items-center bg-white p-2 rounded border border-red-200">
-                            <span>🚫 ${escapeHtml(user)}</span>
-                        </li>
-                    `).join('');
-                }
-            }
+            const reviewDisplay=document.getElementById('current-review-display'), reviewLink=document.getElementById('current-review-link');
+            if(reviewDisplay){ if(currentlyReviewing?.username){ reviewDisplay.innerHTML=`<div class="text-blue-900 font-['Lilita_One'] truncate">${escapeHtml(currentlyReviewing.gameName)}</div><div class="text-sm text-blue-700 mt-1 uppercase font-black truncate">by ${escapeHtml(currentlyReviewing.username)}</div>`; if(reviewLink&&currentlyReviewing.gameUrl){reviewLink.href=currentlyReviewing.gameUrl;reviewLink.classList.remove('hidden');}} else {reviewDisplay.innerHTML='<span class="text-gray-400 italic">Waiting for next game...</span>'; if(reviewLink) reviewLink.classList.add('hidden');} }
+            const hist=document.getElementById('history-list-container'); if(hist){ hist.innerHTML=historyList.length?[...historyList].reverse().map(item=>`<div class="bg-white border-2 border-gray-300 rounded-xl p-3 flex items-center justify-between opacity-80"><div><h4 class="font-black text-gray-800 text-sm md:text-base">${escapeHtml(item.gameName)}</h4><p class="text-xs font-bold text-gray-500">by ${escapeHtml(item.username)}</p></div><a href="${escapeHtml(item.gameUrl||'#')}" target="_blank" rel="noopener noreferrer" class="text-xs bg-gray-800 text-white font-bold px-3 py-2 rounded-lg">Play</a></div>`).join(''):'<div class="flex flex-col items-center justify-center text-gray-500 h-full mt-10"><div class="text-5xl md:text-6xl mb-4 grayscale opacity-40">🕰️</div><p class="font-bold text-xl md:text-2xl font-bold text-gray-400">No history yet</p></div>'; }
         }
     </script>
 </body>
