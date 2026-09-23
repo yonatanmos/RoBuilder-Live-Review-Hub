@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoBuilder | Live Review Hub</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #4dc0ff;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.5) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.5) 2px, transparent 2px);
+            background-size: 50px 50px;
+            background-position: center top;
+            color: #111;
+            padding-top: 100px; 
+            overflow-x: hidden;
+        }
+
+        .roblox-title {
+            font-family: 'Lilita One', cursive;
+            background: linear-gradient(180deg, #ffe600 0%, #ff7300 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -webkit-text-stroke: 4px #1a1a1a;
+            filter: drop-shadow(5px 7px 0px #1a1a1a);
+            line-height: 1.1;
+        }
+
+        .roblox-subtitle {
+            font-family: 'Lilita One', cursive;
+            color: white;
+            -webkit-text-stroke: 2px #1a1a1a;
+            filter: drop-shadow(3px 4px 0px #1a1a1a);
+        }
+        
+        .roblox-heading-small {
+            font-family: 'Lilita One', cursive;
+            background: linear-gradient(180deg, #ffe600 0%, #ff8c00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -webkit-text-stroke: 2px #1a1a1a;
+            filter: drop-shadow(3px 4px 0px #1a1a1a);
+        }
+
+        .panel {
+            background-color: rgba(255, 255, 255, 0.98);
+            border: 5px solid #1a1a1a;
+            border-radius: 20px;
+            box-shadow: 8px 10px 0px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .btn-roblox {
+            font-family: 'Lilita One', cursive;
+            font-size: 1.15rem;
+            color: white;
+            background: linear-gradient(180deg, #fde047 0%, #f59e0b 100%); 
+            border: 3px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            box-shadow: 0px 6px 0px #1a1a1a, 0px 10px 0px rgba(0,0,0,0.2); 
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            -webkit-text-stroke: 1.5px #1a1a1a;
+            letter-spacing: 1.5px;
+            text-align: center;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .btn-roblox:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0px 8px 0px #1a1a1a, 0px 12px 0px rgba(0,0,0,0.2); }
+        .btn-roblox:active, .btn-roblox.active-tab {
+            transform: translateY(6px);
+            box-shadow: 0px 0px 0px #1a1a1a, 0px 2px 0px rgba(0,0,0,0.3);
+            background: linear-gradient(180deg, #f59e0b 0%, #ea580c 100%);
+        }
+
+        .btn-green { background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%); }
+        .btn-green:active { background: linear-gradient(180deg, #16a34a 0%, #15803d 100%); }
+        .btn-blue { background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%); }
+        .btn-blue:active { background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%); }
+        .btn-purple { background: linear-gradient(180deg, #c084fc 0%, #9333ea 100%); }
+        .btn-purple:active { background: linear-gradient(180deg, #9333ea 0%, #7e22ce 100%); }
+        .btn-red { background: linear-gradient(180deg, #f87171 0%, #dc2626 100%); }
+        .btn-red:active { background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%); }
+        .btn-gray { background: linear-gradient(180deg, #e5e7eb 0%, #9ca3af 100%); color: #374151; -webkit-text-stroke: 1px #111;}
+        .btn-gray:active { background: linear-gradient(180deg, #9ca3af 0%, #6b7280 100%); }
+
+        .btn-roblox:disabled {
+            background: linear-gradient(180deg, #d1d5db 0%, #9ca3af 100%);
+            -webkit-text-stroke: 1px #4b5563;
+            cursor: not-allowed;
+            transform: translateY(6px);
+            box-shadow: 0px 0px 0px #1a1a1a;
+        }
+
+        .input-game {
+            width: 100%;
+            padding: 14px 18px;
+            border: 4px solid #1a1a1a;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            outline: none;
+            box-shadow: inset 0px 4px 0px rgba(0,0,0,0.06);
+            transition: all 0.2s;
+            background-color: #f8fafc;
+        }
+        .input-game:focus { border-color: #f59e0b; background-color: #ffffff; box-shadow: inset 0px 4px 0px rgba(0,0,0,0.06), 0 0 0 4px rgba(245, 158, 11, 0.3); }
+
+        @keyframes popIn { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+        
+        .animate-pop { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .hover-lift:hover { transform: translateY(-4px) scale(1.01); box-shadow: 6px 8px 0px rgba(0, 0, 0, 0.3); }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; border: 2px solid #cbd5e1;}
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 8px; border: 2px solid #1a1a1a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    </style>
+</head>
+<body class="min-h-screen pb-12 px-4 flex flex-col relative">
+
+    <nav class="fixed top-0 left-0 w-full bg-white border-b-8 border-gray-900 shadow-xl z-40 p-3">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4 animate-float">
+                <span onclick="toggleAdminMode()" class="cursor-pointer font-['Lilita_One'] text-3xl text-gray-900 tracking-wider flex items-center gap-2" title="Click to toggle Admin Mode">
+                    <span class="text-4xl">🛠️</span> ROBUILDER
+                </span>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-3 items-center w-full lg:w-auto">
+                <button onclick="switchTab('section-home')" id="tab-home" class="btn-roblox active-tab text-xs sm:text-sm px-4 py-2">Main Menu</button>
+                <button onclick="switchTab('section-queue')" id="tab-queue" class="btn-roblox text-xs sm:text-sm px-4 py-2">Submit Game</button>
+                <button onclick="switchTab('section-history')" id="tab-history" class="btn-roblox text-xs sm:text-sm px-4 py-2">History</button>
+                <button onclick="switchTab('section-portfolio')" id="tab-portfolio" class="btn-roblox text-xs sm:text-sm px-4 py-2">Portfolio</button>
+                <button onclick="switchTab('section-admin')" id="tab-admin" class="btn-roblox btn-purple text-xs sm:text-sm px-4 py-2 hidden">Admin</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto mt-12 lg:mt-8 flex-grow space-y-10 w-full relative z-10">
+
+        <header class="text-center relative py-8 animate-pop animate-float">
+            <h1 class="roblox-title text-6xl md:text-8xl lg:text-[10rem] tracking-wide">RoBuilder</h1>
+            <h2 class="roblox-subtitle text-2xl md:text-5xl -mt-2 md:-mt-8 transform -rotate-3 inline-block bg-gray-900 px-6 py-2 rounded-xl shadow-lg border-4 border-white">
+                Let's Build Together!
+            </h2>
+        </header>
+
+        <!-- SECTION 1: MAIN MENU -->
+        <section id="section-home" class="tab-content panel p-6 md:p-12 text-center animate-pop">
+            <h3 class="roblox-heading-small text-4xl md:text-6xl mb-8">Welcome to My Hub!</h3>
+            
+            <div class="max-w-4xl mx-auto space-y-8 text-lg md:text-xl font-bold text-gray-700 leading-relaxed">
+                <p>
+                    Hey everyone! I'm <span class="text-gray-900 font-black text-2xl">RoBuilder</span>. 
+                    Welcome to the official central hub for my streams, building portfolio, and live game reviews!
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                    <div class="hover-lift bg-blue-50 border-4 border-blue-200 rounded-2xl p-6 text-left flex flex-col h-full hover:border-blue-400 transition-colors cursor-pointer" onclick="switchTab('section-queue')">
+                        <div class="text-5xl mb-4 animate-float">📺</div>
+                        <h4 class="font-['Lilita_One'] text-3xl text-gray-900 mb-2">Live Game Reviews</h4>
+                        <p class="text-base text-gray-600 mb-4 flex-grow">Submit your game to the active queue. I review viewer games live on stream! You can check past reviews in the History tab.</p>
+                        <button class="btn-roblox btn-blue w-full py-2">Submit Now</button>
+                    </div>
+                    
+                    <div class="hover-lift bg-green-50 border-4 border-green-200 rounded-2xl p-6 text-left flex flex-col h-full hover:border-green-400 transition-colors cursor-pointer" onclick="switchTab('section-portfolio')">
+                        <div class="text-5xl mb-4 animate-float">🔨</div>
+                        <h4 class="font-['Lilita_One'] text-3xl text-gray-900 mb-2">Hire Me</h4>
+                        <p class="text-base text-gray-600 mb-4 flex-grow">Need a professional builder? Check out my past simulator maps, RP cities, and tycoon models in my portfolio.</p>
+                        <button class="btn-roblox btn-green w-full py-2">View Portfolio</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: PORTFOLIO -->
+        <section id="section-portfolio" class="tab-content panel p-6 md:p-10 hidden animate-pop">
+            <h3 class="roblox-heading-small text-4xl md:text-6xl mb-4 text-center">Portfolio</h3>
+            <p class="text-center font-bold text-gray-600 mb-10 text-sm md:text-lg">RoBuilder's Roblox Studio work, projects, and official contact information.</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12 items-stretch">
+                <!-- Profile Logo -->
+                <div class="lg:col-span-4 border-4 border-gray-900 rounded-2xl bg-white shadow-[6px_8px_0px_#1a1a1a] p-6 flex flex-col items-center justify-center text-center hover-lift">
+                    <div class="w-full max-w-xs aspect-square rounded-2xl border-4 border-gray-900 overflow-hidden flex items-center justify-center mb-5 bg-blue-50 shadow-inner relative">
+                        <img src="assets/images/profile/robuilder-logo.png" alt="RoBuilder Logo" class="w-full h-full object-contain p-4 animate-float" onerror="this.src='https://placehold.co/400x400/3b82f6/ffffff?text=RoBuilder'">
+                    </div>
+                </div>
+
+                <div class="lg:col-span-8 border-4 border-gray-900 rounded-2xl bg-white shadow-[6px_8px_0px_#1a1a1a] p-7 md:p-9 flex flex-col justify-center">
+                    <div class="flex flex-wrap items-center gap-3 mb-4">
+                        <span class="px-4 py-2 rounded-full bg-orange-100 text-orange-800 border-2 border-orange-500 font-black shadow-sm">Professional Builder 🔨</span>
+                        <a href="https://www.youtube.com/@RoBuilder" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-full bg-gray-900 text-white font-black hover:bg-gray-700 transition shadow-sm">YouTube ↗</a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-full bg-indigo-500 text-white font-black hover:bg-indigo-400 border-2 border-indigo-700 transition shadow-sm">Discord Contact 💬</a>
+                    </div>
+                    <h4 class="font-['Lilita_One'] text-3xl md:text-5xl text-gray-900 mb-4">About RoBuilder</h4>
+                    <p class="text-base md:text-lg leading-relaxed text-gray-700 font-bold">
+                        RoBuilder is a professional Roblox Studio builder and YouTuber who creates content around world design, map creation, and game development. This portfolio showcases examples of the high-quality builds and environments featured through the RoBuilder brand.
+                    </p>
+                </div>
+            </div>
+
+            <h4 class="font-['Lilita_One'] text-4xl text-gray-900 text-center mb-7">Featured Roblox Projects</h4>
+            
+            <!-- Dynamic Portfolio Grid -->
+            <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Generated by renderPortfolio() -->
+            </div>
+        </section>
+
+        <!-- SECTION 3: GAME SUBMISSIONS & QUEUE -->
+        <section id="section-queue" class="tab-content hidden animate-pop">
+            
+            <div class="panel border-blue-500 mb-8 p-4 md:p-6 shadow-[8px_10px_0px_rgba(59,130,246,0.3)] bg-gradient-to-r from-blue-50 to-white hover-lift">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="flex items-center gap-4 w-full md:w-auto">
+                        <div class="w-12 h-12 md:w-16 md:h-16 bg-blue-500 rounded-full flex items-center justify-center border-4 border-gray-900 animate-pulse shrink-0">
+                            <span class="text-2xl md:text-3xl text-white">👀</span>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="roblox-heading-small text-xl md:text-2xl text-blue-600 mb-1">Currently Reviewing Live</h3>
+                            <div id="current-review-display" class="font-black text-gray-900 text-xl md:text-3xl break-all">
+                                <span class="text-gray-400 italic">Waiting for RoBuilder...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" id="current-review-link" target="_blank" class="btn-roblox btn-blue hidden whitespace-nowrap w-full md:w-auto">Play Along</a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <div class="lg:col-span-5 relative">
+                    <div class="panel p-6 lg:sticky lg:top-32">
+                        <h3 class="roblox-heading-small text-3xl md:text-4xl mb-2 text-center">Add Your Game</h3>
+                        <p class="text-center font-bold text-gray-500 mb-6 text-sm">Fill out the details to join the live queue.</p>
+                        
+                        <div id="form-message" class="hidden mb-4 p-4 rounded-xl border-4 font-bold text-center text-sm shadow-inner"></div>
+
+                        <form id="submission-form" class="space-y-4 md:space-y-5">
+                            <div>
+                                <label class="block font-black text-gray-800 mb-2 uppercase text-xs md:text-sm tracking-wider pl-2">Roblox Username</label>
+                                <input type="text" id="input-username" required placeholder="Builderman" class="input-game text-sm md:text-base">
+                            </div>
+                            
+                            <div>
+                                <label class="block font-black text-gray-800 mb-2 uppercase text-xs md:text-sm tracking-wider pl-2">Game Name</label>
+                                <input type="text" id="input-gamename" required placeholder="Ultimate Tycoon" class="input-game text-sm md:text-base">
+                            </div>
+
+                            <div>
+                                <label class="block font-black text-gray-800 mb-2 uppercase text-xs md:text-sm tracking-wider pl-2">Game Link URL</label>
+                                <input type="url" id="input-gameurl" required placeholder="https://www.roblox.com/games/..." class="input-game text-sm md:text-base">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block font-black text-gray-800 mb-2 uppercase text-xs md:text-sm tracking-wider pl-2">Time Spent Working</label>
+                                    <input type="text" id="input-timespent" required placeholder="e.g. 2 months" class="input-game text-sm md:text-base">
+                                </div>
+                                <div>
+                                    <label class="block font-black text-gray-800 mb-2 uppercase text-xs md:text-sm tracking-wider pl-2">Robux Spent</label>
+                                    <input type="number" id="input-robuxspent" required placeholder="e.g. 10000" class="input-game text-sm md:text-base" min="0">
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t-4 border-dashed border-gray-200">
+                                <button type="submit" id="btn-submit" class="btn-roblox btn-blue w-full py-4 text-lg md:text-xl">
+                                    Submit Game 🎮
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7">
+                    <div class="panel p-4 md:p-6 h-[500px] md:h-[700px] flex flex-col">
+                        <div class="flex flex-col sm:flex-row justify-between items-center sm:items-end gap-4 border-b-4 border-gray-200 pb-4 mb-4">
+                            <h3 class="roblox-heading-small text-3xl md:text-4xl text-center sm:text-left">Live Queue</h3>
+                            <div class="flex items-center gap-2 font-bold text-gray-800 bg-gray-100 px-4 py-2 rounded-xl border-2 border-gray-900 shadow-inner w-full sm:w-auto justify-center">
+                                <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse border border-red-900 shrink-0"></div>
+                                <span id="queue-count">0 Waiting</span>
+                            </div>
+                        </div>
+
+                        <div id="queue-loader" class="flex-1 flex flex-col items-center justify-center text-gray-600">
+                            <div class="w-12 h-12 md:w-16 md:h-16 border-8 border-gray-200 border-t-orange-500 rounded-full animate-spin mb-6"></div>
+                            <p class="font-black text-xl md:text-2xl font-['Lilita_One']">Connecting...</p>
+                        </div>
+
+                        <div id="queue-empty" class="hidden flex-1 flex flex-col items-center justify-center text-gray-500">
+                            <div class="text-5xl md:text-7xl mb-6 grayscale opacity-40 animate-float">🎮</div>
+                            <p class="font-bold text-2xl md:text-3xl font-['Lilita_One'] text-gray-400">Queue is empty!</p>
+                        </div>
+
+                        <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 md:pr-3 space-y-4" id="queue-list-container">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 4: REVIEW HISTORY -->
+        <section id="section-history" class="tab-content hidden animate-pop">
+            <div class="panel p-4 md:p-6 h-[700px] flex flex-col max-w-5xl mx-auto">
+                <div class="border-b-4 border-gray-200 pb-4 mb-4 flex flex-col sm:flex-row justify-between items-center">
+                    <div>
+                        <h3 class="roblox-heading-small text-3xl md:text-4xl">Review History</h3>
+                        <p class="font-bold text-gray-600 mt-2 text-sm md:text-base">Past games that have already been reviewed live on stream.</p>
+                    </div>
+                    <div class="text-4xl md:text-5xl opacity-80 mt-4 sm:mt-0">🏆</div>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 md:pr-3 space-y-3" id="history-list-container">
+                    <div class="flex flex-col items-center justify-center text-gray-500 h-full mt-10">
+                        <div class="text-5xl md:text-6xl mb-4 grayscale opacity-40 animate-float">🕰️</div>
+                        <p class="font-bold text-xl md:text-2xl font-['Lilita_One'] text-gray-400">Loading history...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: ADMIN DASHBOARD -->
+        <section id="section-admin" class="tab-content hidden animate-pop">
+            <div class="panel border-purple-500 p-6 md:p-8 shadow-[8px_10px_0px_rgba(168,85,247,0.3)] bg-purple-50">
+                <div class="flex items-center justify-between border-b-4 border-purple-200 pb-6 mb-6">
+                    <div>
+                        <h3 class="roblox-heading-small text-purple-600 text-3xl md:text-5xl mb-2">Admin Dashboard</h3>
+                        <p class="font-bold text-purple-800 text-sm md:text-base">Manage the live queue and user access.</p>
+                    </div>
+                    <div class="text-4xl md:text-5xl">👑</div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+                    <!-- Manage Queue -->
+                    <div class="bg-white border-4 border-gray-900 rounded-2xl p-5 md:p-6 shadow-[4px_6px_0px_#1a1a1a]">
+                        <h4 class="font-['Lilita_One'] text-xl md:text-2xl mb-4 border-b-2 border-gray-200 pb-2">Up Next in Queue</h4>
+                        <div id="admin-next-queue" class="space-y-3">
+                            <p class="text-gray-500 font-bold italic">Loading next items...</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t-2 border-gray-200">
+                             <button onclick="clearCurrentReview()" class="btn-roblox btn-gray text-xs md:text-sm py-2 w-full md:w-auto">Finish Review (Move to History)</button>
+                        </div>
+                    </div>
+
+                    <!-- Manage Blacklist -->
+                    <div class="bg-white border-4 border-gray-900 rounded-2xl p-5 md:p-6 shadow-[4px_6px_0px_#1a1a1a]">
+                        <h4 class="font-['Lilita_One'] text-xl md:text-2xl mb-4 border-b-2 border-gray-200 pb-2">User Blacklist</h4>
+                        <form id="blacklist-form" class="flex flex-col sm:flex-row gap-2 mb-4">
+                            <input type="text" id="input-blacklist" class="input-game flex-1 !p-2 !text-sm" placeholder="Roblox Username" required>
+                            <button type="submit" class="btn-roblox btn-green !p-2 !text-sm">Block</button>
+                        </form>
+                        
+                        <div class="bg-red-50 border-2 border-red-200 rounded-xl p-3 h-40 md:h-48 overflow-y-auto custom-scrollbar">
+                            <ul id="blacklist-ul" class="space-y-2 text-sm font-bold text-red-900">
+                                <li class="text-gray-400 italic">No blacklisted users.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        window.escapeHtml = function(unsafe) {
+            return (unsafe || '').toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        };
+
+        function switchTab(sectionId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.btn-roblox').forEach(el => el.classList.remove('active-tab'));
+            
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) targetSection.classList.remove('hidden');
+            
+            const btnMap = {
+                'section-home': 'tab-home',
+                'section-queue': 'tab-queue',
+                'section-history': 'tab-history',
+                'section-portfolio': 'tab-portfolio',
+                'section-admin': 'tab-admin'
+            };
+            if(btnMap[sectionId]) {
+                const btn = document.getElementById(btnMap[sectionId]);
+                if (btn) btn.classList.add('active-tab');
+            }
+        }
+
+        // ==========================================
+        // DYNAMIC PORTFOLIO IMAGES
+        // ==========================================
+        window.ROBUILDER_PORTFOLIO = [
+            {
+                title: 'Bike Shop',
+                image: 'assets/images/portfolio/bike-shop.webp',
+                description: 'A bright Roblox motorcycle shop showcase with display platforms, branded walls, gear, and a clean showroom layout.'
+            },
+            {
+                title: 'Battle Bots Lobby',
+                image: 'assets/images/portfolio/battle-bots-lobby.webp',
+                description: 'A colorful futuristic Roblox lobby with neon city scenery, battle areas, shops, and interactive game displays.'
+            },
+            {
+                title: 'Xmax',
+                image: 'assets/images/portfolio/xmas.webp',
+                description: 'A colorful Amezing christmas map.'
+            },
+            {
+                title: 'Tycoon Lobby',
+                image: 'assets/images/portfolio/tycoon_lobby.webp',
+                description: 'A Amezing Tycoon Lobby.'
+            },
+            {
+                title: 'Steal Stud',
+                image: 'assets/images/portfolio/steal_stud.webp',
+                description: 'An amezing looking steal a brainrot map style.'
+            },
+            {
+                title: 'Pink Castle',
+                image: 'assets/images/portfolio/Pink_Castle.webp',
+                description: 'A Very PinkFull castle map for an amezing look.'
+            },
+            {
+                title: 'Stunt Lobby',
+                image: 'assets/images/portfolio/Stunt_lobby.webp',
+                description: 'A Stunt Lobby That Look Amezing And Wounder Full.'
+            },
+            {
+                title: 'Castle Map',
+                image: 'assets/images/portfolio/Castle_Map.webp',
+                description: 'A Wounder Full Old Castle In Low Poly Style.'
+            },
+            {
+                title: 'Stunt Werehouse',
+                image: 'assets/images/portfolio/Stunt_werehouse.webp',
+                description: 'A Look inside of the werehouse, what an amezing look.'
+            },
+            {
+                title: 'Theme Tycoon',
+                image: 'assets/images/portfolio/Theme_Tycoon.webp',
+                description: 'A Good Looking Massive Tycoon for the player to enjoy it look.'
+            }
+        ];
+
+        function renderPortfolio() {
+            const grid = document.getElementById('portfolio-grid');
+            if (!grid) return;
+            
+            grid.innerHTML = window.ROBUILDER_PORTFOLIO.map(item => `
+                <div class="bg-white border-4 border-gray-900 rounded-2xl overflow-hidden shadow-[6px_8px_0px_#1a1a1a] hover-lift flex flex-col group">
+                    <div class="aspect-video w-full bg-gray-200 border-b-4 border-gray-900 relative overflow-hidden flex items-center justify-center">
+                        <img src="${item.image}" alt="${escapeHtml(item.title)}" 
+                             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                             onerror="this.src='https://placehold.co/600x400/e2e8f0/475569?text=Portfolio+Image'">
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col justify-between bg-white z-10">
+                        <div>
+                            <h5 class="font-['Lilita_One'] text-2xl text-gray-900 mb-2">${escapeHtml(item.title)}</h5>
+                            <p class="text-gray-600 font-bold text-sm leading-relaxed">${escapeHtml(item.description)}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        document.addEventListener("DOMContentLoaded", renderPortfolio);
+    </script>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyCSu7SKHWRsxM7gWxbJfGCX-78QLDrRMBs",
+            authDomain: "robuilder-website.firebaseapp.com",
+            projectId: "robuilder-website",
+            storageBucket: "robuilder-website.firebasestorage.app",
+            messagingSenderId: "840242217780",
+            appId: "1:840242217780:web:43344bec2925c31ed0db61",
+            measurementId: "G-D0JT8F9X82"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let currentUser = null;
+        let localBlacklist = [];
+        let isAdmin = false; 
+        
+        let queueDataCache = { queue: [], currentlyReviewing: null }; 
+
+        window.toggleAdminMode = function() {
+            isAdmin = !isAdmin;
+            alert("Admin Mode toggled to: " + (isAdmin ? "ON" : "OFF"));
+            const adminTab = document.getElementById('tab-admin');
+            if (adminTab) {
+                if (isAdmin) adminTab.classList.remove('hidden');
+                else {
+                    adminTab.classList.add('hidden');
+                    switchTab('section-queue');
+                }
+            }
+            if (queueDataCache) renderQueueAndState(queueDataCache);
+        };
+
+        const queueRef = doc(db, "app_state", "live_queue");
+
+        signInAnonymously(auth).catch((err) => console.error(err));
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (user) currentUser = user;
+        });
+
+        document.getElementById('submission-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+    
+            const btn = document.getElementById('btn-submit');
+            const msg = document.getElementById('form-message');
+    
+            const username = document.getElementById('input-username').value.trim();
+            const gameName = document.getElementById('input-gamename').value.trim();
+            const gameUrl = document.getElementById('input-gameurl').value.trim();
+            const timeSpent = document.getElementById('input-timespent').value.trim();
+            const robuxSpent = document.getElementById('input-robuxspent').value.trim();
+
+            if(!username || !gameName || !gameUrl || !timeSpent || !robuxSpent) {
+                msg.textContent = "Please fill in all fields.";
+                msg.className = "mb-4 p-3 rounded bg-red-100 text-red-800 border-2 border-red-500 font-bold text-center block";
+                return;
+            }
+
+            if (localBlacklist.some(name => name.toLowerCase() === username.toLowerCase())) {
+                msg.textContent = "You are currently blocked from submitting games.";
+                msg.className = "mb-4 p-3 rounded bg-red-100 text-red-800 border-2 border-red-500 font-bold text-center block";
+                return;
+            }
+
+            const currentQueue = queueDataCache.queue || [];
+            const currentReview = queueDataCache.currentlyReviewing;
+            
+            const isAlreadyInQueue = currentQueue.some(game => game.username.toLowerCase() === username.toLowerCase());
+            const isCurrentlyReviewing = currentReview && currentReview.username && currentReview.username.toLowerCase() === username.toLowerCase();
+            
+            if (isAlreadyInQueue || isCurrentlyReviewing) {
+                msg.textContent = "You already have a game in the live queue!";
+                msg.className = "mb-4 p-3 rounded bg-red-100 text-red-800 border-2 border-red-500 font-bold text-center block animate-pop";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = "Submitting... ⏳";
+            msg.classList.remove('hidden');
+    
+            try {
+                const newGameEntry = {
+                    username,
+                    gameName,
+                    gameUrl,
+                    timeSpent,
+                    robuxSpent,
+                    submittedAt: new Date().toISOString()
+                };
+
+                await setDoc(queueRef, {
+                    queue: arrayUnion(newGameEntry)
+                }, { merge: true });
+
+                msg.textContent = "Game submitted to the queue!";
+                msg.className = "mb-4 p-3 rounded bg-green-100 text-green-800 border-2 border-green-500 font-bold text-center block";
+                document.getElementById('submission-form').reset();
+
+            } catch (err) {
+                console.error("Firestore Write Error:", err);
+                msg.textContent = "Error saving to database: " + (err.message || "Unknown error");
+                msg.className = "mb-4 p-3 rounded bg-red-100 text-red-800 border-2 border-red-500 font-bold text-center block";
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = "Submit Game 🎮";
+    
+            setTimeout(() => { msg.classList.add('hidden'); }, 5000);
+        });
+
+        window.adminSelectGame = async function(index) {
+            try {
+                const docSnap = await getDoc(queueRef);
+                if (!docSnap.exists()) return;
+                const data = docSnap.data();
+                
+                let queue = data.queue || [];
+                let history = data.history || [];
+                const current = data.currentlyReviewing;
+
+                let updatedHistory = history;
+                if (current && current.username) {
+                    updatedHistory = [...history, current];
+                }
+
+                const selectedGame = queue[index];
+                queue.splice(index, 1); 
+
+                await updateDoc(queueRef, {
+                    currentlyReviewing: selectedGame,
+                    queue: queue,
+                    history: updatedHistory
+                });
+            } catch (err) {
+                console.error("Failed to select game:", err);
+                alert("Error selecting game: " + err.message);
+            }
+        };
+
+        window.adminDeleteGame = async function(index) {
+            if (!confirm("Are you sure you want to completely remove this game from the queue?")) return;
+            try {
+                const docSnap = await getDoc(queueRef);
+                if (!docSnap.exists()) return;
+                
+                const data = docSnap.data();
+                let queue = data.queue || [];
+                queue.splice(index, 1);
+                
+                await updateDoc(queueRef, { queue: queue });
+            } catch (err) {
+                console.error("Failed to delete game:", err);
+                alert("Error deleting game: " + err.message);
+            }
+        };
+
+        window.clearCurrentReview = async function() {
+            try {
+                const docSnap = await getDoc(queueRef);
+                if (!docSnap.exists()) return;
+
+                const data = docSnap.data();
+                const queue = data.queue || [];
+                const history = data.history || [];
+                const current = data.currentlyReviewing;
+
+                let updatedHistory = history;
+                if (current && current.username) {
+                    updatedHistory = [...history, current];
+                }
+
+                const nextGame = queue.length > 0 ? queue[0] : null;
+                const remainingQueue = queue.length > 0 ? queue.slice(1) : [];
+
+                await updateDoc(queueRef, {
+                    currentlyReviewing: nextGame,
+                    queue: remainingQueue,
+                    history: updatedHistory
+                });
+            } catch (err) {
+                console.error("Failed to finish review:", err);
+                alert("Error finishing review: " + err.message);
+            }
+        };
+
+        document.getElementById('blacklist-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('input-blacklist');
+            const username = input.value.trim();
+            if (!username) return;
+
+            try {
+                await setDoc(queueRef, {
+                    blacklist: arrayUnion(username)
+                }, { merge: true });
+                input.value = '';
+                alert(`User ${username} added to blacklist.`);
+            } catch (err) {
+                console.error("Blacklist error:", err);
+                alert("Error blacklisting user: " + err.message);
+            }
+        });
+
+        onSnapshot(queueRef, (docSnapshot) => {
+            if (docSnapshot.exists()) {
+                const data = docSnapshot.data();
+                queueDataCache = data;
+                localBlacklist = data.blacklist || [];
+                renderQueueAndState(data);
+            } else {
+                setDoc(queueRef, { queue: [], history: [], blacklist: [], currentlyReviewing: null });
+            }
+        }, (error) => {
+            console.error("Queue snapshot error:", error);
+        });
+
+        function renderQueueAndState(data) {
+            const queueList = data.queue || [];
+            const historyList = data.history || [];
+            const currentlyReviewing = data.currentlyReviewing;
+            const blacklist = data.blacklist || [];
+
+            const loader = document.getElementById('queue-loader');
+            if (loader) loader.classList.add('hidden');
+            
+            const container = document.getElementById('queue-list-container');
+            const emptyState = document.getElementById('queue-empty');
+            
+            document.getElementById('queue-count').textContent = `${queueList.length} Waiting`;
+
+            if(queueList.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                container.innerHTML = queueList.map((item, index) => {
+                    const isFirst = index === 0;
+                    return `
+                    <div class="bg-white border-4 border-gray-900 rounded-xl p-3 flex flex-col sm:flex-row items-start sm:items-center gap-3 transition-transform hover:scale-[1.01] ${isFirst ? 'bg-orange-50 border-orange-500 shadow-[4px_4px_0px_rgba(249,115,22,0.3)]' : 'shadow-[3px_4px_0px_#1a1a1a]'}">
+                        
+                        <div class="flex items-center gap-3 w-full sm:w-auto flex-grow min-w-0">
+                            <div class="font-['Lilita_One'] text-2xl md:text-3xl ${isFirst ? 'text-orange-500' : 'text-gray-400'} w-8 md:w-10 text-center shrink-0">
+                                #${index + 1}
+                            </div>
+                            <div class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 rounded-full border-2 border-gray-900 overflow-hidden shrink-0">
+                                <img src="https://tr.rbxcdn.com/38c6edcb50633730ff4cf39459583254/150/150/AvatarHeadshot/Png" alt="Avatar" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-grow min-w-0">
+                                <h4 class="font-black text-gray-900 text-sm md:text-base truncate">${escapeHtml(item.username)}</h4>
+                                <p class="text-xs md:text-sm font-bold text-gray-600 truncate">${escapeHtml(item.gameName)}</p>
+                                
+                                <div class="flex flex-wrap gap-2 mt-1">
+                                    <span class="text-[10px] md:text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-black border border-blue-200" title="Time Spent">⏱️ ${escapeHtml(item.timeSpent || 'N/A')}</span>
+                                    <span class="text-[10px] md:text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-black border border-green-200" title="Robux Spent">💰 ${escapeHtml(item.robuxSpent || '0')} R$</span>
+                                    <a href="${escapeHtml(item.gameUrl)}" target="_blank" rel="noopener noreferrer" class="text-[10px] md:text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-black border border-purple-200 hover:bg-purple-200 transition-colors inline-block">🔗 Play Link</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${isAdmin ? `
+                            <div class="flex gap-2 w-full sm:w-auto mt-3 sm:mt-0 pt-3 sm:pt-0 border-t-2 border-gray-100 sm:border-0 justify-end">
+                                <button onclick="adminSelectGame(${index})" class="bg-blue-500 hover:bg-blue-600 text-white font-black text-xs px-3 py-2 rounded-lg border-2 border-gray-900 shadow-[2px_2px_0px_#1a1a1a] active:translate-y-1 active:shadow-none transition-all">Select</button>
+                                <button onclick="adminDeleteGame(${index})" class="bg-red-500 hover:bg-red-600 text-white font-black text-xs px-3 py-2 rounded-lg border-2 border-gray-900 shadow-[2px_2px_0px_#1a1a1a] active:translate-y-1 active:shadow-none transition-all">Delete</button>
+                            </div>
+                        ` : ''}
+
+                        ${isFirst && !isAdmin ? '<div class="text-xl md:text-2xl animate-bounce shrink-0 hidden sm:block">🔥</div>' : ''}
+                    </div>
+                `}).join('');
+            }
+
+            const reviewDisplay = document.getElementById('current-review-display');
+            const reviewLink = document.getElementById('current-review-link');
+            
+            if(currentlyReviewing && currentlyReviewing.username) {
+                reviewDisplay.innerHTML = `
+                    <div class="text-blue-900 font-['Lilita_One'] tracking-wide truncate w-full" title="${escapeHtml(currentlyReviewing.gameName)}">
+                        ${escapeHtml(currentlyReviewing.gameName)}
+                    </div>
+                    <div class="text-sm text-blue-700 mt-1 uppercase tracking-widest font-black truncate">
+                        by ${escapeHtml(currentlyReviewing.username)}
+                    </div>
+                `;
+                if(currentlyReviewing.gameUrl) {
+                    reviewLink.href = escapeHtml(currentlyReviewing.gameUrl);
+                    reviewLink.classList.remove('hidden');
+                } else {
+                    reviewLink.classList.add('hidden');
+                }
+            } else {
+                reviewDisplay.innerHTML = '<span class="text-gray-400 italic">Waiting for next game...</span>';
+                reviewLink.classList.add('hidden');
+            }
+
+            const histContainer = document.getElementById('history-list-container');
+            if(historyList.length === 0) {
+                histContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center text-gray-500 h-full mt-10">
+                        <div class="text-5xl md:text-6xl mb-4 grayscale opacity-40 animate-float">🕰️</div>
+                        <p class="font-bold text-xl md:text-2xl font-['Lilita_One'] text-gray-400">No history yet</p>
+                    </div>`;
+            } else {
+                const reversed = [...historyList].reverse();
+                histContainer.innerHTML = reversed.map(item => `
+                    <div class="bg-white border-2 border-gray-300 rounded-xl p-3 flex items-center justify-between opacity-80 hover:opacity-100 transition-opacity">
+                        <div>
+                            <h4 class="font-black text-gray-800 text-sm md:text-base">${escapeHtml(item.gameName)}</h4>
+                            <p class="text-xs font-bold text-gray-500">by ${escapeHtml(item.username)}</p>
+                            <div class="flex flex-wrap gap-2 mt-1">
+                                <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-black border border-gray-200">⏱️ ${escapeHtml(item.timeSpent || 'N/A')}</span>
+                                <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-black border border-gray-200">💰 ${escapeHtml(item.robuxSpent || '0')} R$</span>
+                            </div>
+                        </div>
+                        <a href="${escapeHtml(item.gameUrl)}" target="_blank" rel="noopener noreferrer" class="text-xs bg-gray-800 text-white font-bold px-3 py-2 rounded-lg hover:bg-gray-700 whitespace-nowrap ml-2">Play</a>
+                    </div>
+                `).join('');
+            }
+
+            const adminNextContainer = document.getElementById('admin-next-queue');
+            if (adminNextContainer) {
+                if (queueList.length === 0) {
+                    adminNextContainer.innerHTML = '<p class="text-gray-500 font-bold italic">Queue is empty.</p>';
+                } else {
+                    adminNextContainer.innerHTML = queueList.slice(0, 3).map((item, i) => `
+                        <div class="p-2 border-2 border-gray-200 rounded-lg flex justify-between items-center text-xs font-bold">
+                            <span>#${i + 1} <strong>${escapeHtml(item.gameName)}</strong> by ${escapeHtml(item.username)}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            const blacklistUl = document.getElementById('blacklist-ul');
+            if (blacklistUl) {
+                if (blacklist.length === 0) {
+                    blacklistUl.innerHTML = '<li class="text-gray-400 italic">No blacklisted users.</li>';
+                } else {
+                    blacklistUl.innerHTML = blacklist.map(user => `
+                        <li class="flex justify-between items-center bg-white p-2 rounded border border-red-200">
+                            <span>🚫 ${escapeHtml(user)}</span>
+                        </li>
+                    `).join('');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
