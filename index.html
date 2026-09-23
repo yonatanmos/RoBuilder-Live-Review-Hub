@@ -516,7 +516,26 @@
             msg.textContent=text; msg.className=classes[type]||classes.info;
         }
         function usernameLower(name){ return String(name||'').trim().toLowerCase(); }
-        function findMine(){ return currentUser ? (queueDataCache.queue.find(x=>x.userId===currentUser.uid)||null) : null; }
+        function getSavedSubmissionId(){
+            try { return localStorage.getItem('robuilder_my_submission_id') || null; } catch { return null; }
+        }
+        function saveSubmissionId(id){
+            try { if (id) localStorage.setItem('robuilder_my_submission_id', id); } catch {}
+        }
+        function clearSavedSubmissionId(){
+            try { localStorage.removeItem('robuilder_my_submission_id'); } catch {}
+        }
+        function findMine(){
+            if (!currentUser) return null;
+            const direct = queueDataCache.queue.find(x => x.userId === currentUser.uid && ['waiting','reviewing'].includes(x.status));
+            if (direct) { saveSubmissionId(direct.id); return direct; }
+            const savedId = getSavedSubmissionId();
+            if (!savedId) return null;
+            const saved = queueDataCache.queue.find(x => x.id === savedId && x.userId === currentUser.uid && ['waiting','reviewing'].includes(x.status));
+            if (saved) return saved;
+            clearSavedSubmissionId();
+            return null;
+        }
         function updatePriorityPanel(submissionId){
             mySubmissionId=submissionId||null;
             const panel=document.getElementById('priority-panel'), status=document.getElementById('priority-status'), btn=document.getElementById('priority-product-button');
@@ -574,6 +593,7 @@
                     tx.set(stateRef,{userId:currentUser.uid,activeSubmissionId:submissionRef.id,cooldownUntil:state.cooldownUntil??null,scriptingAllowed:state.scriptingAllowed===true,warningCount:Number(state.warningCount||0),createdAt:state.createdAt||serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
                 });
                 mySubmissionId=submissionRef.id;
+                saveSubmissionId(submissionRef.id);
                 await watchMyReceipt(submissionRef.id);
                 updatePriorityPanel(submissionRef.id);
                 showFormMessage('Game submitted! Your live position will update automatically.','success');
