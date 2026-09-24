@@ -140,7 +140,7 @@
     <nav class="fixed top-0 left-0 w-full bg-white border-b-8 border-gray-900 shadow-xl z-40 p-3">
         <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-4 animate-float">
-                <span onclick="toggleAdminMode()" class="cursor-pointer font-['Lilita_One'] text-3xl text-gray-900 tracking-wider flex items-center gap-2" title="Click to toggle Admin Mode">
+                <span onclick="document.getElementById('tab-connect')?.click()" class="cursor-pointer font-['Lilita_One'] text-3xl text-gray-900 tracking-wider flex items-center gap-2" title="Connect Roblox Admin">
                     <span class="text-4xl">🛠️</span> ROBUILDER
                 </span>
             </div>
@@ -150,7 +150,8 @@
                 <button onclick="switchTab('section-queue')" id="tab-queue" class="btn-roblox text-xs sm:text-sm px-4 py-2">Submit Game</button>
                 <button onclick="switchTab('section-history')" id="tab-history" class="btn-roblox text-xs sm:text-sm px-4 py-2">History</button>
                 <button onclick="switchTab('section-portfolio')" id="tab-portfolio" class="btn-roblox text-xs sm:text-sm px-4 py-2">Portfolio</button>
-                <button onclick="switchTab('section-admin')" id="tab-admin" class="btn-roblox btn-purple text-xs sm:text-sm px-4 py-2 hidden" class="hidden">Admin</button>
+                <button onclick="switchTab('section-connect')" id="tab-connect" class="btn-roblox btn-blue text-xs sm:text-sm px-4 py-2">Connect Roblox</button>
+                <button onclick="switchTab('section-admin')" id="tab-admin" class="btn-roblox btn-purple text-xs sm:text-sm px-4 py-2 hidden">Admin</button>
             </div>
         </div>
     </nav>
@@ -353,9 +354,35 @@
             </div>
         </section>
 
-        <!-- SECTION 5: ADMIN DASHBOARD -->
+        <!-- SECTION 5: CONNECT ROBLOX ADMIN -->
+        <section id="section-connect" class="tab-content hidden animate-pop">
+            <div class="panel border-blue-500 p-6 md:p-10 shadow-[8px_10px_0px_rgba(59,130,246,0.3)] bg-blue-50 max-w-3xl mx-auto">
+                <div class="text-center mb-8">
+                    <div class="text-6xl mb-3">🔗</div>
+                    <h3 class="roblox-heading-small text-blue-600 text-4xl md:text-6xl mb-3">Connect Roblox</h3>
+                    <p class="font-bold text-blue-900 text-sm md:text-lg">Connect the Roblox account that is authorized by the RoBuilders Dev Challenge place. No email or webhook is used.</p>
+                </div>
+
+                <div id="pairing-not-started" class="bg-white border-4 border-gray-900 rounded-2xl p-5 md:p-7 shadow-[4px_6px_0px_#1a1a1a] text-center">
+                    <p class="font-black text-gray-800 mb-4">Generate a temporary code, then join the RoBuilders Dev Challenge and enter the code in the Roblox connection box.</p>
+                    <button id="create-pairing-button" class="btn-roblox btn-blue w-full py-3 text-lg">Generate Connection Code 🔐</button>
+                </div>
+
+                <div id="pairing-active" class="hidden bg-white border-4 border-gray-900 rounded-2xl p-5 md:p-7 shadow-[4px_6px_0px_#1a1a1a] text-center">
+                    <p class="font-black text-gray-700 mb-2">Your temporary connection code:</p>
+                    <div id="pairing-code" class="font-['Lilita_One'] text-4xl md:text-6xl tracking-[0.35em] text-gray-900 bg-gray-100 border-4 border-dashed border-gray-500 rounded-xl py-4 px-3 select-all">------</div>
+                    <p id="pairing-countdown" class="font-black text-orange-700 mt-3">Expires in 10 minutes.</p>
+                    <p id="pairing-status" class="font-bold text-blue-800 mt-4">Waiting for the authorized Roblox account...</p>
+                </div>
+
+                <div class="mt-6 text-xs md:text-sm text-blue-900 font-bold bg-blue-100 border-2 border-blue-300 rounded-xl p-4">
+                    The code is temporary. Do not post it publicly. Once Roblox verifies the authorized account, this browser account is remembered and the Admin tab returns after rejoining the website.
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: ADMIN DASHBOARD -->
         <section id="section-admin" class="tab-content hidden animate-pop">
-<!-- Admin controls are intentionally disabled in the free Spark build. Use Firebase Console for admin/review changes. -->
             <div class="panel border-purple-500 p-6 md:p-8 shadow-[8px_10px_0px_rgba(168,85,247,0.3)] bg-purple-50">
                 <div class="flex items-center justify-between border-b-4 border-purple-200 pb-6 mb-6">
                     <div>
@@ -419,6 +446,7 @@
                 'section-queue': 'tab-queue',
                 'section-history': 'tab-history',
                 'section-portfolio': 'tab-portfolio',
+                'section-connect': 'tab-connect',
                 'section-admin': 'tab-admin'
             };
             if(btnMap[sectionId]) {
@@ -460,7 +488,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, updateDoc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, runTransaction, serverTimestamp, Timestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const siteConfig = window.ROBUILDER_SITE_CONFIG || {};
         const firebaseConfig = siteConfig.firebaseConfig || {};
@@ -475,6 +503,9 @@
         const stateCol = collection(db, ...publicRoot, 'submitterState');
         const intentCol = collection(db, ...publicRoot, 'priorityIntents');
         const receiptCol = collection(db, ...publicRoot, 'priorityReceipts');
+        const pairCol = collection(db, ...publicRoot, 'adminPairings');
+        const adminCol = collection(db, ...publicRoot, 'adminUsers');
+        const blacklistCol = collection(db, ...publicRoot, 'blacklist');
         const liveRef = doc(db, ...publicRoot, 'live', 'current');
         const priorityProductUrl = siteConfig.priorityProductUrl || 'https://www.roblox.com/developer-product/6766483571/product/3714242041';
         const blockedPattern = /(fuck|shit|bitch|asshole|dick|piss|cunt|nigger|nigga|faggot|whore|slut)/i;
@@ -483,6 +514,11 @@
         let queueDataCache = { queue: [], history: [], currentlyReviewing: null };
         let mySubmissionId = null;
         let unsubMyReceipt = null;
+        let unsubAdmin = null;
+        let unsubPair = null;
+        let activePairId = null;
+        let pairingTimer = null;
+        let websiteIsAdmin = false;
 
         function toMillis(value) {
             if (!value) return 0;
@@ -562,6 +598,198 @@
             }, err=>console.warn('Priority receipt listener:',err));
         }
 
+        function makePairCode(){
+            const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            const out=[];
+            const limit=Math.floor(256/chars.length)*chars.length;
+            while(out.length<12){
+                const bytes=new Uint8Array(16);
+                crypto.getRandomValues(bytes);
+                for(const b of bytes){
+                    if(b>=limit) continue;
+                    out.push(chars[b%chars.length]);
+                    if(out.length===12) break;
+                }
+            }
+            return out.join('');
+        }
+
+        function startPairingCountdown(expiresAt){
+            if(pairingTimer) clearInterval(pairingTimer);
+            const el=document.getElementById('pairing-countdown');
+            const tick=()=>{
+                if(!el) return;
+                const left=Math.max(0,toMillis(expiresAt)-Date.now());
+                if(left<=0){
+                    el.textContent='Expired. Generate a new code.';
+                    clearInterval(pairingTimer);
+                    return;
+                }
+                const mins=Math.floor(left/60000);
+                const secs=Math.floor((left%60000)/1000);
+                el.textContent=`Expires in ${mins}m ${String(secs).padStart(2,'0')}s.`;
+            };
+            tick();
+            pairingTimer=setInterval(tick,1000);
+        }
+
+        function showPairingCode(code, expiresAt){
+            document.getElementById('pairing-not-started')?.classList.add('hidden');
+            document.getElementById('pairing-active')?.classList.remove('hidden');
+            const codeEl=document.getElementById('pairing-code');
+            if(codeEl) codeEl.textContent=code;
+            startPairingCountdown(expiresAt);
+        }
+
+        function setAdminUi(enabled, robloxName=''){
+            websiteIsAdmin=enabled===true;
+            const tab=document.getElementById('tab-admin');
+            if(tab) tab.classList.toggle('hidden', !websiteIsAdmin);
+            const connect=document.getElementById('tab-connect');
+            if(connect) connect.textContent=websiteIsAdmin?'Roblox Connected ✅':'Connect Roblox';
+            const status=document.getElementById('pairing-status');
+            if(status && websiteIsAdmin){
+                status.textContent=robloxName
+                    ? `✅ Connected as ${robloxName}. Website admin access is active.`
+                    : '✅ Roblox admin access is active.';
+            }
+            if(websiteIsAdmin) renderAdminPanel();
+        }
+
+        async function createPairing(){
+            if(!currentUser){
+                showFormMessage('Please wait for Firebase to connect.','info');
+                return;
+            }
+            const code=makePairCode();
+            activePairId=code;
+            const expiresAt=Timestamp.fromMillis(Date.now()+10*60*1000);
+            await setDoc(doc(pairCol,code),{
+                firebaseUid:currentUser.uid,
+                status:'pending',
+                createdAt:serverTimestamp(),
+                expiresAt
+            });
+            try{ localStorage.setItem('robuilder_admin_pairing',code); }catch{}
+            showPairingCode(code, expiresAt);
+            document.getElementById('pairing-status').textContent='Waiting for the authorized Roblox account...';
+            watchPairing(code);
+        }
+
+        function watchPairing(code){
+            if(unsubPair) unsubPair();
+            activePairId=code;
+            unsubPair=onSnapshot(doc(pairCol,code),async snap=>{
+                if(!snap.exists()) return;
+                const data=snap.data();
+                const status=document.getElementById('pairing-status');
+                if(data.firebaseUid!==currentUser?.uid) return;
+
+                if(data.status==='pending'){
+                    showPairingCode(code,data.expiresAt);
+                    if(toMillis(data.expiresAt)<=Date.now()){
+                        if(status) status.textContent='⏳ This code expired. Generate a new one.';
+                    }else if(status && !websiteIsAdmin){
+                        status.textContent='Waiting for the authorized Roblox account...';
+                    }
+                    return;
+                }
+
+                if(data.status==='verified'){
+                    try{
+                        await setDoc(doc(adminCol,currentUser.uid),{
+                            admin:true,
+                            robloxUserId:String(data.robloxUserId),
+                            robloxUsername:String(data.robloxUsername||''),
+                            pairId:code,
+                            linkedAt:serverTimestamp()
+                        },{merge:true});
+                        if(status) status.textContent=`✅ Verified as ${data.robloxUsername||'RoBuilder'}. Admin access is saved.`;
+                    }catch(err){
+                        console.error('Admin link:',err);
+                        if(status) status.textContent='Verification succeeded, but the admin record could not be saved. Deploy the updated firestore.rules.';
+                    }
+                }
+            },err=>console.error('Pairing listener:',err));
+        }
+
+        async function restoreAdmin(){
+            if(!currentUser) return;
+            if(unsubAdmin) unsubAdmin();
+            unsubAdmin=onSnapshot(doc(adminCol,currentUser.uid),snap=>{
+                const d=snap.exists()?snap.data():null;
+                setAdminUi(!!(d?.admin===true && d?.robloxUserId),d?.robloxUsername||'');
+            },err=>{
+                websiteIsAdmin=false;
+                setAdminUi(false);
+                console.error('Admin state:',err);
+            });
+
+            let saved=null;
+            try{ saved=localStorage.getItem('robuilder_admin_pairing'); }catch{}
+            if(saved){
+                try{
+                    const snap=await getDoc(doc(pairCol,saved));
+                    if(snap.exists() && snap.data().firebaseUid===currentUser.uid && (snap.data().status==='pending' || snap.data().status==='verified')){
+                        if(snap.data().status==='pending') showPairingCode(saved,snap.data().expiresAt);
+                        watchPairing(saved);
+                    }
+                }catch(err){
+                    console.warn('Saved pairing lookup:',err);
+                }
+            }
+        }
+
+        async function selectGameForReview(id){
+            if(!websiteIsAdmin) return;
+            const ref=doc(queueCol,id);
+            try{
+                await runTransaction(db,async tx=>{
+                    const snap=await tx.get(ref);
+                    if(!snap.exists() || snap.data().status!=='waiting') throw new Error('That game is no longer waiting.');
+                    const d=snap.data();
+                    tx.update(ref,{status:'reviewing',updatedAt:serverTimestamp()});
+                    tx.set(liveRef,{currentlyReviewing:{id,username:d.username,gameName:d.gameName,gameUrl:d.gameUrl},updatedAt:serverTimestamp()},{merge:true});
+                });
+                showFormMessage('Review started. Everyone on the website sees the change live.','success');
+            }catch(err){ showFormMessage(friendlyError(err),'error'); }
+        }
+        window.clearCurrentReview=async function(){
+            if(!websiteIsAdmin) return;
+            const current=queueDataCache.currentlyReviewing;
+            if(!current?.id) return showFormMessage('No game is currently being reviewed.','info');
+            try{
+                const queueRef=doc(queueCol,current.id);
+                const queueSnap=await getDoc(queueRef);
+                if(!queueSnap.exists()) throw new Error('Current review no longer exists.');
+                const item=queueSnap.data();
+                await updateDoc(queueRef,{status:'completed',updatedAt:serverTimestamp()});
+                if(item.userId){
+                    await updateDoc(doc(stateCol,item.userId),{activeSubmissionId:null,cooldownUntil:Timestamp.fromMillis(Date.now()+24*60*60*1000),scriptingAllowed:false,updatedAt:serverTimestamp()});
+                }
+                await setDoc(liveRef,{currentlyReviewing:null,history:arrayUnion({id:current.id,username:item.username,gameName:item.gameName,gameUrl:item.gameUrl||'',completedAt:new Date().toISOString()}),updatedAt:serverTimestamp()},{merge:true});
+                clearSavedSubmissionId();
+                showFormMessage('Review finished and moved to history.','success');
+            }catch(err){ showFormMessage(friendlyError(err),'error'); }
+        };
+
+        function renderAdminPanel(){
+            const box=document.getElementById('admin-next-queue');
+            if(!box || !websiteIsAdmin) return;
+            const next=sortQueue(queueDataCache.queue).slice(0,8);
+            box.innerHTML=next.length?next.map((item,index)=>`<div class="border-2 border-gray-300 rounded-xl p-3 flex items-center justify-between gap-3"><div class="min-w-0"><div class="font-black truncate">#${index+1} ${escapeHtml(item.gameName)}</div><div class="text-xs font-bold text-gray-500 truncate">${escapeHtml(item.username)}</div></div><button onclick="selectGameForReview('${item.id}')" class="btn-roblox btn-blue !px-3 !py-2 !text-xs">Review</button></div>`).join(''):'<p class="text-gray-500 font-bold italic">No waiting games.</p>';
+            const blacklistForm=document.getElementById('blacklist-form');
+            if(blacklistForm && !blacklistForm.dataset.bound){
+                blacklistForm.dataset.bound='1';
+                blacklistForm.addEventListener('submit',async e=>{
+                    e.preventDefault();
+                    const input=document.getElementById('input-blacklist'); const name=input?.value.trim()||''; if(!name) return;
+                    try{ await setDoc(doc(blacklistCol,usernameLower(name)),{username:name,usernameLower:usernameLower(name),createdAt:serverTimestamp()}); input.value=''; showFormMessage(`${name} was added to the blacklist.`,'success'); }catch(err){showFormMessage(friendlyError(err),'error');}
+                });
+            }
+        }
+        window.selectGameForReview=selectGameForReview;
+
         document.getElementById('submission-form').addEventListener('submit', async event=>{
             event.preventDefault();
             if(!currentUser){ showFormMessage('Connecting to RoBuilder... please try again.', 'info'); return; }
@@ -615,20 +843,31 @@
             }catch(err){ console.error('Priority:',err); showFormMessage(friendlyError(err),'error'); }
         });
 
+        document.getElementById('create-pairing-button')?.addEventListener('click',async()=>{
+            const btn=document.getElementById('create-pairing-button');
+            btn.disabled=true;
+            btn.textContent='Creating code... ⏳';
+            try{ await createPairing(); }
+            catch(err){ console.error('Pairing:',err); showFormMessage(friendlyError(err),'error'); }
+            finally{ btn.disabled=false; btn.textContent='Generate Connection Code 🔐'; }
+        });
+
         signInAnonymously(auth).catch(err=>{ console.error('Anonymous auth:',err); showFormMessage('Enable Authentication → Anonymous in Firebase Console.','error'); });
         onAuthStateChanged(auth, async user=>{
             currentUser=user||null;
             if(!currentUser) return;
+            await restoreAdmin();
             const mine=findMine(); if(mine){ mySubmissionId=mine.id; await watchMyReceipt(mine.id); updatePriorityPanel(mine.id); }
         });
 
         onSnapshot(queueCol,snapshot=>{
             queueDataCache.queue=sortQueue(snapshot.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.status==='waiting'));
             renderQueueAndState(queueDataCache);
+            renderAdminPanel();
             const mine=findMine(); if(mine){ mySubmissionId=mine.id; updatePriorityPanel(mine.id); watchMyReceipt(mine.id); } else updatePriorityPanel(null);
         },error=>{ console.error('Queue snapshot error:',error); const loader=document.getElementById('queue-loader'); if(loader) loader.classList.add('hidden'); showFormMessage('Live queue connection failed. Deploy this project’s firestore.rules.','error'); });
 
-        onSnapshot(liveRef,snapshot=>{ const d=snapshot.exists()?snapshot.data():{}; queueDataCache.currentlyReviewing=d.currentlyReviewing||null; queueDataCache.history=Array.isArray(d.history)?d.history:[]; renderQueueAndState(queueDataCache); },error=>console.warn('Live state snapshot:',error));
+        onSnapshot(liveRef,snapshot=>{ const d=snapshot.exists()?snapshot.data():{}; queueDataCache.currentlyReviewing=d.currentlyReviewing||null; queueDataCache.history=Array.isArray(d.history)?d.history:[]; renderQueueAndState(queueDataCache); renderAdminPanel(); },error=>console.warn('Live state snapshot:',error));
 
         function renderQueueAndState(data){
             const queueList=sortQueue(data.queue||[]); const historyList=data.history||[]; const currentlyReviewing=data.currentlyReviewing;
